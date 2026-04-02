@@ -1,0 +1,369 @@
+<Page
+    x:Class="Lab_03_CG.MVVM.Views.GeometricView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:Lab_03_CG.MVVM.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Margin="8" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="2*" />
+        </Grid.ColumnDefinitions>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
+
+            <Border Style="{StaticResource Card}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Style="{StaticResource CardTitle}" Text="Fractal Controls" />
+
+                    <Border
+                        Grid.Row="1"
+                        Padding="12,12,0,12"
+                        Style="{StaticResource Card}">
+                        <ScrollViewer Padding="0,0,12,0" VerticalScrollBarVisibility="Visible">
+                            <StackPanel Padding="0,4,0,12" Spacing="8">
+
+                                <!--
+                                    Axiom (Initial Shape)
+                                    SelectedIndex → VM.SelectedAxiomIndex
+                                    0 = Line, 1 = Triangle, 2 = Square
+                                -->
+                                <StackPanel Spacing="4">
+                                    <TextBlock FontWeight="SemiBold" Text="Initializer (Axiom)" />
+                                    <ComboBox
+                                        HorizontalAlignment="Stretch"
+                                        SelectedIndex="{x:Bind VM.SelectedAxiomIndex, Mode=TwoWay}">
+                                        <ComboBoxItem Content="Line" />
+                                        <ComboBoxItem Content="Triangle" />
+                                        <ComboBoxItem Content="Square" />
+                                    </ComboBox>
+                                </StackPanel>
+
+                                <!--
+                                    Generator (Rule)
+                                    SelectedIndex → VM.SelectedGeneratorIndex
+                                    0 = Koch Curve, 1 = Minkowski Curve
+                                -->
+                                <StackPanel Spacing="4">
+                                    <TextBlock FontWeight="SemiBold" Text="Generator (Rule)" />
+                                    <ComboBox
+                                        HorizontalAlignment="Stretch"
+                                        SelectedIndex="{x:Bind VM.SelectedGeneratorIndex, Mode=TwoWay}">
+                                        <ComboBoxItem Content="Koch Rule" />
+                                        <ComboBoxItem Content="Double Koch Rule" />
+                                        <ComboBoxItem Content="(Variant) Minkowski Rule" />
+                                    </ComboBox>
+                                </StackPanel>
+
+                                <!--
+                                    Generation Center (X, Y)
+                                    Also updated live when the user drags the marker on the plot.
+                                    Left  NumberBox → VM.CenterX
+                                    Right NumberBox → VM.CenterY
+                                -->
+                                <StackPanel Spacing="4">
+                                    <TextBlock FontWeight="SemiBold" Text="Generation Center (X, Y)" />
+                                    <Grid ColumnSpacing="8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <NumberBox
+                                            Grid.Column="0"
+                                            NumberFormatter="{x:Bind VM.NumberFormatter}"
+                                            SpinButtonPlacementMode="Compact"
+                                            Value="{x:Bind VM.CenterX, Mode=TwoWay}" />
+                                        <NumberBox
+                                            Grid.Column="1"
+                                            NumberFormatter="{x:Bind VM.NumberFormatter}"
+                                            SpinButtonPlacementMode="Compact"
+                                            Value="{x:Bind VM.CenterY, Mode=TwoWay}" />
+                                    </Grid>
+                                </StackPanel>
+
+                                <StackPanel Spacing="4">
+                                    <TextBlock FontWeight="SemiBold" Text="Initializer side length" />
+                                    <NumberBox
+                                        HorizontalAlignment="Stretch"
+                                        Minimum="0.5"
+                                        Maximum="20"
+                                        SmallChange="0.5"
+                                        SpinButtonPlacementMode="Inline"
+                                        NumberFormatter="{x:Bind VM.NumberFormatter}"
+                                        Value="{x:Bind VM.AxiomSize, Mode=TwoWay}" />
+                                </StackPanel>
+
+                                <!-- 
+                                    Rotation Angle
+                                    Slider Value -> VM.RotationAngle
+                                -->
+                                <StackPanel Spacing="4">
+                                    <TextBlock FontWeight="SemiBold" Text="Rotation Angle:" />
+                                    <Slider
+                                        Margin="4"
+                                        Maximum="360"
+                                        Minimum="0"
+                                        SnapsTo="Ticks"
+                                        TickFrequency="15"
+                                        TickPlacement="Outside"
+                                        Value="{x:Bind VM.RotationAngle, Mode=TwoWay}" />
+                                </StackPanel>
+
+                                <!--
+                                    Iteration Count
+                                    Slider Value → VM.IterationCount
+                                -->
+                                <StackPanel Spacing="4">
+                                    <TextBlock FontWeight="SemiBold" Text="Recursion depth:" />
+                                    <Slider
+                                        Margin="4"
+                                        Maximum="5"
+                                        Minimum="0"
+                                        SnapsTo="Ticks"
+                                        TickFrequency="1"
+                                        TickPlacement="Outside"
+                                        Value="{x:Bind VM.IterationCount, Mode=TwoWay}" />
+                                </StackPanel>
+
+                                <!--
+                                    Fractal Color
+                                    SelectedIndex → VM.SelectedColorIndex
+                                    0 = Black, 1 = Red, 2 = Blue
+                                -->
+                                <StackPanel Spacing="4">
+                                    <TextBlock FontWeight="SemiBold" Text="Fractal Color:" />
+                                    <ComboBox
+                                        HorizontalAlignment="Stretch"
+                                        SelectedIndex="{x:Bind VM.SelectedColorIndex, Mode=TwoWay}">
+                                        <ComboBoxItem Content="Black" />
+                                        <ComboBoxItem Content="Red" />
+                                        <ComboBoxItem Content="Blue" />
+                                    </ComboBox>
+                                </StackPanel>
+
+                                <Grid Margin="0,8,0,0" ColumnSpacing="8">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- Build → VM.BuildCommand -->
+                                    <Button
+                                        Grid.Column="0"
+                                        HorizontalAlignment="Stretch"
+                                        Command="{x:Bind VM.BuildCommand}">
+                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                            <TextBlock Text="Build" />
+                                            <FontIcon FontSize="14" Glyph="&#xE8EF;" />
+                                        </StackPanel>
+                                    </Button>
+
+                                    <!-- Reset View → VM.ResetViewCommand -->
+                                    <Button
+                                        Grid.Column="1"
+                                        HorizontalAlignment="Stretch"
+                                        Command="{x:Bind VM.ResetViewCommand}">
+                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                            <FontIcon FontSize="14" Glyph="&#xE72C;" />
+                                            <TextBlock Text="Reset View" />
+                                        </StackPanel>
+                                    </Button>
+
+                                    <Button
+                                        Grid.Column="2"
+                                        HorizontalAlignment="Stretch"
+                                        Command="{x:Bind VM.ClearCanvasCommand}">
+                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                            <FontIcon FontSize="14" Glyph="&#xE74D;" />
+                                            <TextBlock Text="Clear Canvas" />
+                                        </StackPanel>
+                                    </Button>
+                                </Grid>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Border>
+
+                    <!-- Premium: Evolution Mode -->
+                    <Border
+                        Grid.Row="2"
+                        Margin="0,8,0,0"
+                        Padding="8"
+                        BorderBrush="{x:Bind VM.RainbowGradientBrush}"
+                        BorderThickness="2"
+                        Style="{StaticResource Card}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                            </Grid.RowDefinitions>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <FontIcon Grid.Column="1" VerticalAlignment="Center" FontSize="16" FontWeight="SemiBold" Foreground="{x:Bind VM.RainbowGradientBrush}" Glyph="&#xE735;" />
+                                <TextBlock Grid.Column="2" Margin="10,0,10,0" FontSize="18" FontWeight="SemiBold" Foreground="{x:Bind VM.RainbowGradientBrush}" Text="Evolution Mode" />
+                                <FontIcon Grid.Column="3" VerticalAlignment="Center" FontSize="16" FontWeight="SemiBold" Foreground="{x:Bind VM.RainbowGradientBrush}" Glyph="&#xE735;" />
+                            </Grid>
+
+                            <TextBlock
+                                Grid.Row="1"
+                                Margin="0,8"
+                                FontSize="13"
+                                Foreground="{x:Bind VM.RainbowBrush}"
+                                Text="Watch the fractal unfold step-by-step in real time with this premium feature!"
+                                TextWrapping="Wrap" />
+
+                            <Grid Grid.Row="2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <!--
+                                    "Evolve" — starts evolution, disabled while running
+                                    "Stop"   — stops evolution, disabled while not running
+                                -->
+                                <Button
+                                    HorizontalAlignment="Stretch"
+                                    Background="{x:Bind VM.RainbowGradientBrush}"
+                                    Command="{x:Bind VM.StartEvolutionCommand}"
+                                    IsEnabled="{x:Bind VM.IsNotEvolving, Mode=OneWay}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Margin="8,0" VerticalAlignment="Center" FontSize="14" Foreground="White" Text="Evolve" />
+                                        <FontIcon VerticalAlignment="Center" FontSize="14" Foreground="White" Glyph="&#xEC0A;" />
+                                    </StackPanel>
+                                </Button>
+
+                                <Button
+                                    Grid.Column="1"
+                                    Margin="8,0,0,0"
+                                    HorizontalAlignment="Stretch"
+                                    Background="{StaticResource ButtonBackgroundThemeBrush}"
+                                    Command="{x:Bind VM.StopEvolutionCommand}"
+                                    IsEnabled="{x:Bind VM.IsEvolving, Mode=OneWay}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Margin="8,0" VerticalAlignment="Center" FontSize="14" Foreground="White" Text="Stop" />
+                                        <FontIcon VerticalAlignment="Center" FontSize="14" Foreground="White" Glyph="&#xF8AE;" />
+                                    </StackPanel>
+                                </Button>
+                            </Grid>
+
+                            <!--
+                                Progress row — label driven by VM.IterationLabel
+                                e.g. "Current Iteration: 3 / 5"
+                            -->
+                            <Border Grid.Row="3" Margin="0,8,0,0" Style="{StaticResource Card}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Border Padding="4" Background="{x:Bind VM.RainbowGradientBrush}" CornerRadius="4">
+                                        <FontIcon Foreground="White" Glyph="&#xE916;" />
+                                    </Border>
+                                    <TextBlock
+                                        Grid.Column="1"
+                                        Margin="8,0"
+                                        VerticalAlignment="Center"
+                                        FontWeight="SemiBold"
+                                        Foreground="{x:Bind VM.RainbowGradientBrush}"
+                                        Text="{x:Bind VM.IterationLabel, Mode=OneWay}" />
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Border>
+
+            <!-- Save and Export -->
+            <Border
+                Grid.Row="1"
+                Margin="0,8,0,0"
+                Padding="12"
+                Style="{StaticResource Card}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Style="{StaticResource CardTitle}" Text="Save and Export" />
+                    <Grid Grid.Row="1" Height="35" Margin="0,4,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Button
+                            Margin="0,0,4,0"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            Command="{x:Bind VM.ExportAsPNGCommand}"
+                            Style="{StaticResource AccentButtonStyle}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Export as .PNG" />
+                                <FontIcon Margin="8,0,0,0" Glyph="&#xEB9F;" />
+                            </StackPanel>
+                        </Button>
+                        <Button
+                            Grid.Column="1"
+                            Margin="4,0,0,0"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            Command="{x:Bind VM.SaveToGalleryCommand}"
+                            CommandParameter="{Binding RelativeSource={RelativeSource Self}}"
+                            Style="{StaticResource AccentButtonStyle}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Save to Gallery" />
+                                <FontIcon Margin="8,0,0,0" Glyph="&#xE91B;" />
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!--
+            Right column: ScottPlot canvas hosted via ContentControl.
+            VM.Canvas is a WinUIPlot instance created in the ViewModel constructor,
+            exactly like WpfPlot in the Bezier lab (EditorViewModel.Canvas).
+            Mouse events for center-marker drag are attached in code-behind.
+        -->
+        <Border
+            Grid.Column="1"
+            Margin="8,0,0,0"
+            Style="{StaticResource Card}">
+            <Border
+                Margin="8"
+                BorderBrush="{StaticResource AccentAAFillColorDefaultBrush}"
+                BorderThickness="4"
+                CornerRadius="8">
+                <ContentControl
+                    x:Name="CanvasHost"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    HorizontalContentAlignment="Stretch"
+                    VerticalContentAlignment="Stretch"
+                    Content="{x:Bind VM.Canvas, Mode=OneTime}" />
+            </Border>
+        </Border>
+    </Grid>
+</Page>

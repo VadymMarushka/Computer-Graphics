@@ -1,0 +1,386 @@
+<Page
+    x:Class="Lab_03_CG.MVVM.Views.AlgebraicView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:canvas="using:Microsoft.Graphics.Canvas.UI.Xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:Lab_03_CG.MVVM.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Margin="8" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="2*" />
+        </Grid.ColumnDefinitions>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
+
+            <Border Style="{StaticResource Card}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Style="{StaticResource CardTitle}" Text="Fractal Controls" />
+
+                    <Border
+                        Grid.Row="1"
+                        Padding="12,12,0,12"
+                        Style="{StaticResource Card}">
+                        <ScrollViewer Padding="0,0,12,0" VerticalScrollBarVisibility="Visible">
+                            <ContentControl HorizontalContentAlignment="Stretch">
+                                <!--  IsEnabled="{x:Bind VM.IsNotAnimating, Mode=OneWay}"  -->
+                                <StackPanel Padding="0,4,0,12" Spacing="8">
+
+                                    <StackPanel Spacing="4">
+                                        <TextBlock FontWeight="SemiBold" Text="Fractal Formula" />
+                                        <ComboBox HorizontalAlignment="Stretch" SelectedIndex="{x:Bind VM.SelectedFormulaIndex, Mode=TwoWay}">
+                                            <ComboBoxItem Content="Quadratic: (z² + c)" />
+                                            <ComboBoxItem Content="Cubic: (z³ + c)" />
+                                            <ComboBoxItem Content="Sinusoidal: sin(z) + c" />
+                                            <ComboBoxItem Content="Variant: tg(z²) + c" />
+                                        </ComboBox>
+                                    </StackPanel>
+
+                                    <StackPanel Spacing="4">
+                                        <Border Padding="10" Style="{StaticResource Card}">
+                                            <StackPanel Spacing="4">
+
+                                                <StackPanel>
+                                                    <TextBlock FontWeight="SemiBold" Text="Calculation Law" />
+                                                    <ComboBox
+                                                        Margin="0,4,0,0"
+                                                        HorizontalAlignment="Stretch"
+                                                        SelectedIndex="{x:Bind VM.SelectedModeIndex, Mode=TwoWay}">
+                                                        <ComboBoxItem Content="Mandelbrot (Z₀ = 0, C = Coord)" />
+                                                        <ComboBoxItem Content="Custom Z0 (Z₀ = Const, C = Coord)" />
+                                                        <ComboBoxItem Content="Julia (Z₀ = Coord, C = Const)" />
+                                                        <ComboBoxItem Content="Mirrored (Z₀ = Const, C = Coord)" />
+                                                    </ComboBox>
+                                                </StackPanel>
+
+                                                <StackPanel>
+                                                    <TextBlock FontWeight="SemiBold" Text="{x:Bind VM.CLabel, Mode=OneWay}" />
+                                                    <ContentControl HorizontalContentAlignment="Stretch" IsEnabled="{x:Bind VM.IsCEnabled, Mode=OneWay}">
+                                                        <StackPanel
+                                                            Margin="0,4"
+                                                            Orientation="Horizontal"
+                                                            Spacing="2">
+                                                            <NumberBox
+                                                                MaxWidth="150"
+                                                                Padding="4"
+                                                                NumberFormatter="{x:Bind VM.NumberFormatter}"
+                                                                SmallChange="0.1"
+                                                                SpinButtonPlacementMode="Compact"
+                                                                Value="{x:Bind VM.ConstantReal, Mode=TwoWay}" />
+                                                            <TextBlock VerticalAlignment="Center" Text="+" />
+                                                            <NumberBox
+                                                                MaxWidth="150"
+                                                                Padding="4"
+                                                                NumberFormatter="{x:Bind VM.NumberFormatter}"
+                                                                SmallChange="0.1"
+                                                                SpinButtonPlacementMode="Compact"
+                                                                Value="{x:Bind VM.ConstantImaginary, Mode=TwoWay}" />
+                                                            <TextBlock VerticalAlignment="Center" Text="i" />
+                                                        </StackPanel>
+                                                    </ContentControl>
+                                                </StackPanel>
+
+                                                <StackPanel>
+                                                    <TextBlock FontWeight="SemiBold" Text="{x:Bind VM.Z0Label, Mode=OneWay}" />
+                                                    <ContentControl HorizontalContentAlignment="Stretch" IsEnabled="{x:Bind VM.IsZ0Enabled, Mode=OneWay}">
+                                                        <StackPanel
+                                                            Margin="0,4"
+                                                            Orientation="Horizontal"
+                                                            Spacing="2">
+                                                            <NumberBox
+                                                                MaxWidth="150"
+                                                                Padding="4"
+                                                                NumberFormatter="{x:Bind VM.NumberFormatter}"
+                                                                SmallChange="0.1"
+                                                                SpinButtonPlacementMode="Compact"
+                                                                Value="{x:Bind VM.Z0Real, Mode=TwoWay}" />
+                                                            <TextBlock VerticalAlignment="Center" Text="+" />
+                                                            <NumberBox
+                                                                MaxWidth="150"
+                                                                Padding="4"
+                                                                NumberFormatter="{x:Bind VM.NumberFormatter}"
+                                                                SmallChange="0.1"
+                                                                SpinButtonPlacementMode="Compact"
+                                                                Value="{x:Bind VM.Z0Imaginary, Mode=TwoWay}" />
+                                                            <TextBlock VerticalAlignment="Center" Text="i" />
+                                                        </StackPanel>
+                                                    </ContentControl>
+                                                </StackPanel>
+
+                                            </StackPanel>
+                                        </Border>
+                                    </StackPanel>
+
+                                    <StackPanel Spacing="4">
+                                        <TextBlock FontWeight="SemiBold" Text="Max Iterations" />
+                                        <NumberBox
+                                            HorizontalAlignment="Stretch"
+                                            Maximum="1000"
+                                            Minimum="10"
+                                            SmallChange="50"
+                                            SpinButtonPlacementMode="Inline"
+                                            Value="{x:Bind VM.MaxIterations, Mode=TwoWay}" />
+                                    </StackPanel>
+
+                                    <StackPanel Spacing="4">
+                                        <TextBlock FontWeight="SemiBold" Text="Escape Radius" />
+                                        <NumberBox
+                                            HorizontalAlignment="Stretch"
+                                            Minimum="0.1"
+                                            SmallChange="1"
+                                            SpinButtonPlacementMode="Inline"
+                                            Value="{x:Bind VM.EscapeRadius, Mode=TwoWay}" />
+                                    </StackPanel>
+
+                                    <StackPanel Spacing="4">
+                                        <TextBlock FontWeight="SemiBold" Text="Color Palette" />
+                                        <ComboBox HorizontalAlignment="Stretch" SelectedIndex="{x:Bind VM.SelectedPaletteIndex, Mode=TwoWay}">
+                                            <ComboBoxItem Content="Grayscale" />
+                                            <ComboBoxItem Content="Solar Eclipse" />
+                                            <ComboBoxItem Content="Ship with Ghosts" />
+                                            <ComboBoxItem Content="Arctic" />
+                                            <ComboBoxItem Content="Glowstick" />
+                                        </ComboBox>
+                                    </StackPanel>
+
+                                    <Grid Margin="0,8,0,0" ColumnSpacing="8">
+                                        <Button
+                                            Grid.Column="1"
+                                            HorizontalAlignment="Stretch"
+                                            Command="{x:Bind VM.ResetViewCommand}">
+                                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                                <FontIcon FontSize="14" Glyph="&#xE72C;" />
+                                                <TextBlock Text="Reset View" />
+                                            </StackPanel>
+                                        </Button>
+                                    </Grid>
+
+                                </StackPanel>
+                            </ContentControl>
+                        </ScrollViewer>
+                    </Border>
+
+                    <Border
+                        Grid.Row="2"
+                        Margin="0,8,0,0"
+                        Padding="8"
+                        BorderBrush="{x:Bind VM.RainbowGradientBrush}"
+                        BorderThickness="2"
+                        Style="{StaticResource Card}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                            </Grid.RowDefinitions>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <FontIcon
+                                    Grid.Column="1"
+                                    VerticalAlignment="Center"
+                                    FontSize="16"
+                                    FontWeight="SemiBold"
+                                    Foreground="{x:Bind VM.RainbowGradientBrush}"
+                                    Glyph="&#xE735;" />
+                                <TextBlock
+                                    Grid.Column="2"
+                                    Margin="8,0"
+                                    VerticalAlignment="Center"
+                                    FontSize="16"
+                                    FontWeight="SemiBold"
+                                    Foreground="{x:Bind VM.RainbowBrush}"
+                                    Text="Chromatic Fractal" />
+                                <FontIcon
+                                    Grid.Column="3"
+                                    VerticalAlignment="Center"
+                                    FontSize="16"
+                                    FontWeight="SemiBold"
+                                    Foreground="{x:Bind VM.RainbowGradientBrush}"
+                                    Glyph="&#xE735;" />
+                            </Grid>
+
+                            <TextBlock
+                                Grid.Row="1"
+                                Margin="0,8,0,4"
+                                FontSize="13"
+                                Foreground="{x:Bind VM.RainbowBrush}"
+                                Text="Spectral colors continuously flow through time, creating a hypnotic effect of a breathing fractal."
+                                TextWrapping="Wrap" />
+
+                            <Grid Grid.Row="3">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Button
+                                    HorizontalAlignment="Stretch"
+                                    Background="{x:Bind VM.RainbowGradientBrush}"
+                                    Command="{x:Bind VM.StartChromaticCommand}"
+                                    IsEnabled="{x:Bind VM.IsNotAnimating, Mode=OneWay}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock
+                                            Margin="8,0"
+                                            VerticalAlignment="Center"
+                                            FontSize="14"
+                                            Foreground="White"
+                                            Text="Let's go" />
+                                        <FontIcon
+                                            VerticalAlignment="Center"
+                                            FontSize="14"
+                                            Foreground="White"
+                                            Glyph="&#xF5B0;" />
+                                    </StackPanel>
+                                </Button>
+                                <Button
+                                    Grid.Column="1"
+                                    Margin="8,0,0,0"
+                                    HorizontalAlignment="Stretch"
+                                    Background="{StaticResource ButtonBackgroundThemeBrush}"
+                                    Command="{x:Bind VM.StopChromaticCommand}"
+                                    IsEnabled="{x:Bind VM.IsChromaticActive, Mode=OneWay}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock
+                                            Margin="8,0"
+                                            VerticalAlignment="Center"
+                                            FontSize="14"
+                                            Foreground="White"
+                                            Text="Stop" />
+                                        <FontIcon
+                                            VerticalAlignment="Center"
+                                            FontSize="14"
+                                            Foreground="White"
+                                            Glyph="&#xF8AE;" />
+                                    </StackPanel>
+                                </Button>
+                            </Grid>
+
+                            <Border
+                                Grid.Row="4"
+                                Margin="0,8,0,0"
+                                Style="{StaticResource Card}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <Border
+                                        Padding="4"
+                                        Background="{x:Bind VM.RainbowGradientBrush}"
+                                        CornerRadius="4">
+                                        <FontIcon Foreground="White" Glyph="&#xE916;" />
+                                    </Border>
+                                    <ProgressBar
+                                        Grid.Column="1"
+                                        MinHeight="6"
+                                        Margin="8,0"
+                                        Foreground="{x:Bind VM.RainbowGradientBrush}"
+                                        Maximum="100"
+                                        Minimum="0"
+                                        Value="{x:Bind VM.ChromaticProgress, Mode=OneWay}" />
+                                    <TextBlock
+                                        Grid.Column="2"
+                                        Margin="4,0,0,0"
+                                        VerticalAlignment="Center"
+                                        FontSize="11"
+                                        Foreground="{x:Bind VM.RainbowBrush}"
+                                        Text="{x:Bind VM.ChromaticTimeLabel, Mode=OneWay}" />
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Border>
+
+            <!--  Save and Export  -->
+            <Border
+                Grid.Row="1"
+                Margin="0,8,0,0"
+                Padding="12"
+                Style="{StaticResource Card}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Style="{StaticResource CardTitle}" Text="Save and Export" />
+                    <Grid
+                        Grid.Row="1"
+                        Height="35"
+                        Margin="0,4,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Button
+                            Margin="0,0,4,0"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            Command="{x:Bind VM.ExportAsPNGCommand}"
+                            Style="{StaticResource AccentButtonStyle}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Export as .PNG" />
+                                <FontIcon Margin="8,0,0,0" Glyph="&#xEB9F;" />
+                            </StackPanel>
+                        </Button>
+                        <Button
+                            Grid.Column="1"
+                            Margin="4,0,0,0"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            Command="{x:Bind VM.SaveToGalleryCommand}"
+                            CommandParameter="{Binding RelativeSource={RelativeSource Self}}"
+                            Style="{StaticResource AccentButtonStyle}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Save to Gallery" />
+                                <FontIcon Margin="8,0,0,0" Glyph="&#xE91B;" />
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <Border
+            Grid.Column="1"
+            Margin="8,0,0,0"
+            Style="{StaticResource Card}">
+            <Border
+                Margin="8"
+                BorderBrush="{StaticResource AccentAAFillColorDefaultBrush}"
+                BorderThickness="4"
+                CornerRadius="8">
+                <canvas:CanvasAnimatedControl
+                    x:Name="FractalCanvas"
+                    ClearColor="Transparent"
+                    CreateResources="FractalCanvas_CreateResources"
+                    Draw="FractalCanvas_Draw"
+                    PointerMoved="FractalCanvas_PointerMoved"
+                    PointerPressed="FractalCanvas_PointerPressed"
+                    PointerReleased="FractalCanvas_PointerReleased"
+                    PointerWheelChanged="FractalCanvas_PointerWheelChanged" />
+            </Border>
+        </Border>
+    </Grid>
+</Page>

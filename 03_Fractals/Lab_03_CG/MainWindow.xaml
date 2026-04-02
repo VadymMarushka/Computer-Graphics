@@ -1,0 +1,59 @@
+<Window
+    x:Class="Lab_03_CG.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Grid x:Name="RootGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid x:Name="AppTitleBar" Grid.Row="0">
+            <TextBlock
+                Margin="20,10,0,0"
+                VerticalAlignment="Center"
+                FontSize="24"
+                Text="{x:Bind VM.Title, Mode=OneWay}" />
+        </Grid>
+
+        <NavigationView
+            x:Name="MainNavView"
+            Grid.Row="1"
+            IsBackButtonVisible="Collapsed"
+            IsSettingsVisible="False"
+            PaneDisplayMode="Top"
+            SelectionChanged="NavView_SelectionChanged">
+
+            <NavigationView.MenuItems>
+                <NavigationViewItem
+                    x:Name="NavAlgebraic"
+                    Content="Algebraic Fractals"
+                    Tag="AlgebraicView">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE8EF;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Content="Geometric Fractals" Tag="GeometricView">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xF157;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Content="Gallery" Tag="GalleryView">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE91B;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+
+            </NavigationView.MenuItems>
+            <Frame x:Name="ContentFrame">
+                <Frame.ContentTransitions>
+                    <TransitionCollection>
+                        <EntranceThemeTransition />
+                    </TransitionCollection>
+                </Frame.ContentTransitions>
+            </Frame>
+            
+        </NavigationView>
+    </Grid>
+</Window>

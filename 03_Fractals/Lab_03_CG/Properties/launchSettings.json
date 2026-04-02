@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Lab_03_CG (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "Lab_03_CG (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
